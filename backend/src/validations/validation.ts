@@ -50,8 +50,3 @@ declare module "express-session" {
         };
     }
 }
-declare module "express" {
-    interface Request {
-        userId?: string; // <-- add userId in Request type
-    }
-}
