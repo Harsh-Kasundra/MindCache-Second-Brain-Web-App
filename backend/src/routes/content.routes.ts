@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post("/", isAuthenticated, contentController.createContent);
 router.get("/", isAuthenticated, contentController.getContent);
-router.put("/:id", isAuthenticated, contentController.updateContent);
-router.delete("/:id", isAuthenticated, contentController.deleteContent);
+router.put("/:content_id", isAuthenticated, contentController.updateContent);
+router.delete("/:content_id", isAuthenticated, contentController.deleteContent);
 export default router;

@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -9,12 +9,12 @@ datasource db {
 }
 
 model User {
-  user_id  String    @id @default(cuid())
-  username String
-  email    String    @unique
-  password String
-  contents Content[]
-  links    Link[]
+  user_id    String    @id @default(cuid())
+  username   String
+  user_email String    @unique
+  password   String
+  contents   Content[]
+  links      Link[]
 }
 
 model Content {
@@ -36,7 +36,7 @@ model Tag {
 
 model Link {
   link_id String @id @default(cuid())
-  hash    String
-  user_id String
+  hash    String @unique
+  user_id String @unique
   user    User   @relation(fields: [user_id], references: [user_id])
 }

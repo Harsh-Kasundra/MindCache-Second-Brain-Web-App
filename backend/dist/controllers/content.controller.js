@@ -1,23 +1,29 @@
-import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
-import {
-    createContentSchema,
-    updateContentSchema,
-} from "../validations/validation";
-import { z } from "zod";
-import { validateRequest } from "../utils/validateRequest";
-
-const prisma = new PrismaClient();
-
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteContent = exports.updateContent = exports.createContent = exports.getContent = void 0;
+const client_1 = require("@prisma/client");
+const validation_1 = require("../validations/validation");
+const zod_1 = require("zod");
+const validateRequest_1 = require("../utils/validateRequest");
+const prisma = new client_1.PrismaClient();
 /**
  * @route GET /api/v1/content/
  * @desc get all the content
  * @access private
  */
-export const getContent = async (req: Request, res: Response): Promise<any> => {
+const getContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user_id = req.userId;
-        const content = await prisma.content.findMany({
+        const content = yield prisma.content.findMany({
             where: {
                 user_id: user_id,
             },
@@ -27,31 +33,29 @@ export const getContent = async (req: Request, res: Response): Promise<any> => {
             message: "Meeting Found successfully ",
             content,
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error("Error fetching Content:", error);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
         });
     }
-};
-
+});
+exports.getContent = getContent;
 /**
  * @route POST /api/v1/content/
  * @desc create new content
  * @access private
  */
-export const createContent = async (
-    req: Request,
-    res: Response
-): Promise<any> => {
+const createContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Request:", req);
     console.log("Response:", res);
     try {
-        const validatedData = validateRequest(createContentSchema, req, res);
-        if (!validatedData) return;
-        const { content_title, content_description, content_link, tag } =
-            validatedData;
+        const validatedData = (0, validateRequest_1.validateRequest)(validation_1.createContentSchema, req, res);
+        if (!validatedData)
+            return;
+        const { content_title, content_description, content_link, tag } = validatedData;
         const userId = req.userId;
         if (!userId) {
             return res.status(400).json({
@@ -59,8 +63,7 @@ export const createContent = async (
                 message: "User not authenticated",
             });
         }
-
-        const content_tag = await prisma.tag.findUnique({
+        const content_tag = yield prisma.tag.findUnique({
             where: {
                 name: tag,
             },
@@ -71,7 +74,7 @@ export const createContent = async (
                 message: "Tag not Found or Invalid Tag",
             });
         }
-        const newContent = await prisma.content.create({
+        const newContent = yield prisma.content.create({
             data: {
                 content_title: content_title,
                 content_description: content_description,
@@ -80,14 +83,14 @@ export const createContent = async (
                 user_id: userId,
             },
         });
-
         return res.status(201).json({
             success: true,
             message: "content created successfully",
             newContent,
         });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
+    }
+    catch (error) {
+        if (error instanceof zod_1.z.ZodError) {
             return res
                 .status(400)
                 .json({ success: false, errors: error.errors });
@@ -96,28 +99,24 @@ export const createContent = async (
             .status(500)
             .json({ success: false, message: "Internal Server Error" });
     }
-};
-
+});
+exports.createContent = createContent;
 /**
  * @route PUT /api/v1/content/:content_id
  * @desc Update any specific content
  * @access private
  */
-export const updateContent = async (
-    req: Request,
-    res: Response
-): Promise<any> => {
+const updateContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const validatedData = validateRequest(updateContentSchema, req, res);
-        if (!validatedData) return;
-        const { content_title, content_description, content_link, tag } =
-            validatedData;
+        const validatedData = (0, validateRequest_1.validateRequest)(validation_1.updateContentSchema, req, res);
+        if (!validatedData)
+            return;
+        const { content_title, content_description, content_link, tag } = validatedData;
         // Check if content exists
-        const existingContent = await prisma.content.findUnique({
+        const existingContent = yield prisma.content.findUnique({
             where: { content_id: req.params.content_id },
         });
-
-        const content_tag = await prisma.tag.findUnique({
+        const content_tag = yield prisma.tag.findUnique({
             where: {
                 name: tag,
             },
@@ -128,14 +127,13 @@ export const updateContent = async (
                 message: "Tag not Found or Invalid Tag",
             });
         }
-
         if (!existingContent) {
             return res.status(404).json({
                 success: false,
                 message: "Content not found",
             });
         }
-        const updatedContent = await prisma.content.update({
+        const updatedContent = yield prisma.content.update({
             where: {
                 content_id: req.params.content_id,
             },
@@ -151,9 +149,10 @@ export const updateContent = async (
             message: "Content updated successfully",
             updatedContent,
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error);
-        if (error instanceof z.ZodError) {
+        if (error instanceof zod_1.z.ZodError) {
             return res
                 .status(400)
                 .json({ success: false, errors: error.errors });
@@ -164,31 +163,27 @@ export const updateContent = async (
             error: error,
         });
     }
-};
-
+});
+exports.updateContent = updateContent;
 /**
  * @route DELETE /api/v1/content/:content_id
  * @desc delete any specific content
  * @access private
  */
-export const deleteContent = async (
-    req: Request,
-    res: Response
-): Promise<any> => {
+const deleteContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const content_id = req.params.content_id;
     try {
         // Check if content exists
-        const existingContent = await prisma.content.findUnique({
+        const existingContent = yield prisma.content.findUnique({
             where: { content_id: content_id },
         });
-
         if (!existingContent) {
             return res.status(404).json({
                 success: false,
                 message: "Content not found",
             });
         }
-        const deletedContent = await prisma.content.delete({
+        const deletedContent = yield prisma.content.delete({
             where: {
                 content_id: content_id,
             },
@@ -198,11 +193,13 @@ export const deleteContent = async (
             message: "content deleted successfully",
             deletedContent,
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error("Error deleting meeting:", error);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
         });
     }
-};
+});
+exports.deleteContent = deleteContent;
