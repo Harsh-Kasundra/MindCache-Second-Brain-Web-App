@@ -66,7 +66,7 @@ exports.createLink = createLink;
 /**
  * @route DELETE /api/v1/share
  * @desc delete all shareable link for the user
- * @access Private
+ * @access private
  */
 const deleteLink = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

@@ -19,7 +19,7 @@ const prisma = new client_1.PrismaClient();
 /**
  * @route POST /api/v1/auth/signup
  * @desc signup user
- * @access : public
+ * @access public
  */
 const signupUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //validating the input data from frontend
@@ -70,7 +70,7 @@ exports.signupUser = signupUser;
 /**
  * @route POST /api/v1/auth/signin
  * @desc Login user with JWT and session
- * @access Public
+ * @access public
  */
 const signinUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;

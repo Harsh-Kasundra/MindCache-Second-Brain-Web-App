@@ -28,9 +28,9 @@ const getContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 user_id: user_id,
             },
         });
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
-            message: "Meeting Found successfully ",
+            message: "content Found successfully ",
             content,
         });
     }

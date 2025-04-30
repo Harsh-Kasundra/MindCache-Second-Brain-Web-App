@@ -15,28 +15,54 @@ model User {
   password   String
   contents   Content[]
   links      Link[]
+  createdAt  DateTime  @default(now())
+  updateAt   DateTime  @updatedAt
 }
 
 model Content {
-  content_id          String  @id @default(cuid())
+  content_id          String   @id @default(cuid())
   content_title       String
   content_description String
   content_link        String?
   user_id             String
-  user                User    @relation(fields: [user_id], references: [user_id])
-  tag_id              String
-  tag                 Tag     @relation(fields: [tag_id], references: [tag_id])
+  user                User     @relation(fields: [user_id], references: [user_id])
+  tags                Tag[]    @relation("ContentTags")
+  createdAt           DateTime @default(now())
+  updateAt            DateTime @updatedAt
+  type_id             String
+  Type                Type     @relation("ContentType", fields: [type_id], references: [type_id]) // Relation field
+}
+
+enum ContentTypes {
+  Instagram
+  Twitter
+  Youtube
+  Medium
+  Image
+  Text
+}
+
+model Type {
+  type_id   String       @id @default(cuid())
+  type_name ContentTypes
+  contents  Content[]    @relation("ContentType")
+  createdAt DateTime     @default(now())
+  updateAt  DateTime     @updatedAt
 }
 
 model Tag {
-  tag_id   String    @id @default(cuid())
-  name     String    @unique
-  contents Content[]
+  tag_id    String    @id @default(cuid())
+  name      String
+  contents  Content[] @relation("ContentTags")
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
 }
 
 model Link {
-  link_id String @id @default(cuid())
-  hash    String @unique
-  user_id String @unique
-  user    User   @relation(fields: [user_id], references: [user_id])
+  link_id   String   @id @default(cuid())
+  hash      String   @unique
+  user_id   String   @unique
+  user      User     @relation(fields: [user_id], references: [user_id])
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
 }

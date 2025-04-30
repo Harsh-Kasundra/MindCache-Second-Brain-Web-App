@@ -22,9 +22,9 @@ export const getContent = async (req: Request, res: Response): Promise<any> => {
                 user_id: user_id,
             },
         });
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
-            message: "Meeting Found successfully ",
+            message: "content Found successfully ",
             content,
         });
     } catch (error) {
