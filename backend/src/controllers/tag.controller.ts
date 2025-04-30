@@ -42,7 +42,7 @@ export const createTag = async (req: Request, res: Response): Promise<any> => {
         }
 
         // Check if tag already exists
-        const existingTag = await prisma.tag.findUnique({
+        const existingTag = await prisma.tag.findFirst({
             where: {
                 name,
             },

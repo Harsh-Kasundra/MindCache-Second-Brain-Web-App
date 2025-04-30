@@ -29,6 +29,14 @@ export const createContentSchema = z.object({
         .min(3, "Title must be at least 3 characters long"),
     content_link: z.string().optional(),
     tag: z.string(),
+    type: z.enum([
+        "Instagram",
+        "Twitter",
+        "Youtube",
+        "Medium",
+        "Image",
+        "Text",
+    ]),
 });
 
 export const updateContentSchema = z.object({
@@ -40,6 +48,14 @@ export const updateContentSchema = z.object({
         .min(3, "Title must be at least 3 characters long"),
     content_link: z.string().optional(),
     tag: z.string(),
+    type: z.enum([
+        "Instagram",
+        "Twitter",
+        "Youtube",
+        "Medium",
+        "Image",
+        "Text",
+    ]),
 });
 
 declare module "express-session" {
