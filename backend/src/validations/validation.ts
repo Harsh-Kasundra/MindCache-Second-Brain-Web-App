@@ -63,6 +63,7 @@ declare module "express-session" {
         user?: {
             user_id: string;
             user_email: string;
+            username: string;
         };
     }
 }

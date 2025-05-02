@@ -46,7 +46,11 @@ export const signupUser = async (req: Request, res: Response): Promise<any> => {
         const token = generateToken(newUser.user_id);
 
         // Store in session
-        req.session.user = newUser;
+        req.session.user = {
+            user_id: newUser.user_id,
+            user_email: newUser.user_email,
+            username: newUser.username,
+        };
 
         return res.status(201).json({
             success: true,
@@ -57,7 +61,7 @@ export const signupUser = async (req: Request, res: Response): Promise<any> => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "An error occurred during Sigup",
+            message: "An error occurred during Signup",
             error: error instanceof Error ? error.message : "Unknown error",
         });
     }
@@ -104,6 +108,7 @@ export const signinUser = async (req: Request, res: Response): Promise<any> => {
         req.session.user = {
             user_id: user.user_id,
             user_email: user.user_email,
+            username: user.username,
         };
 
         return res.status(200).json({
