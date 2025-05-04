@@ -28,6 +28,14 @@ exports.createContentSchema = zod_1.z.object({
         .min(3, "Title must be at least 3 characters long"),
     content_link: zod_1.z.string().optional(),
     tag: zod_1.z.string(),
+    type: zod_1.z.enum([
+        "Instagram",
+        "Twitter",
+        "Youtube",
+        "Medium",
+        "Image",
+        "Text",
+    ]),
 });
 exports.updateContentSchema = zod_1.z.object({
     content_title: zod_1.z
@@ -38,4 +46,12 @@ exports.updateContentSchema = zod_1.z.object({
         .min(3, "Title must be at least 3 characters long"),
     content_link: zod_1.z.string().optional(),
     tag: zod_1.z.string(),
+    type: zod_1.z.enum([
+        "Instagram",
+        "Twitter",
+        "Youtube",
+        "Medium",
+        "Image",
+        "Text",
+    ]),
 });

@@ -50,7 +50,11 @@ const signupUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         /// Automatically log in the user after registration
         const token = (0, jwtConfig_1.generateToken)(newUser.user_id);
         // Store in session
-        req.session.user = newUser;
+        req.session.user = {
+            user_id: newUser.user_id,
+            user_email: newUser.user_email,
+            username: newUser.username,
+        };
         return res.status(201).json({
             success: true,
             message: "Admin registered successfully and logged in",
@@ -61,7 +65,7 @@ const signupUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         return res.status(500).json({
             success: false,
-            message: "An error occurred during Sigup",
+            message: "An error occurred during Signup",
             error: error instanceof Error ? error.message : "Unknown error",
         });
     }
@@ -104,6 +108,7 @@ const signinUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         req.session.user = {
             user_id: user.user_id,
             user_email: user.user_email,
+            username: user.username,
         };
         return res.status(200).json({
             success: true,

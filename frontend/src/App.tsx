@@ -3,15 +3,15 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route element={<Signin />} path="/signin" />
-                <Route element={<Signup />} path="/signup" />
-                <Route></Route>
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route element={<Signin />} path="/signin" />
+        <Route element={<Signup />} path="/signup" />
+        <Route></Route>
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

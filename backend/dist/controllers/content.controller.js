@@ -49,13 +49,11 @@ exports.getContent = getContent;
  * @access private
  */
 const createContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Request:", req);
-    console.log("Response:", res);
     try {
         const validatedData = (0, validateRequest_1.validateRequest)(validation_1.createContentSchema, req, res);
         if (!validatedData)
             return;
-        const { content_title, content_description, content_link, tag } = validatedData;
+        const { content_title, content_description, content_link, tag, type } = validatedData;
         const userId = req.userId;
         if (!userId) {
             return res.status(400).json({
@@ -63,7 +61,18 @@ const createContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 message: "User not authenticated",
             });
         }
-        const content_tag = yield prisma.tag.findUnique({
+        const content_type = yield prisma.type.findFirst({
+            where: {
+                type_name: type,
+            },
+        });
+        if (!content_type) {
+            return res.status(404).json({
+                success: false,
+                message: "Type not Found or Invalid Type",
+            });
+        }
+        const content_tag = yield prisma.tag.findFirst({
             where: {
                 name: tag,
             },
@@ -76,28 +85,31 @@ const createContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         const newContent = yield prisma.content.create({
             data: {
-                content_title: content_title,
-                content_description: content_description,
-                content_link: content_link,
-                tag_id: content_tag.tag_id,
+                content_title,
+                content_description,
+                content_link,
+                tags: { connect: [{ tag_id: content_tag.tag_id }] },
+                type_id: content_type.type_id,
                 user_id: userId,
             },
         });
         return res.status(201).json({
             success: true,
-            message: "content created successfully",
+            message: "Content created successfully",
             newContent,
         });
     }
     catch (error) {
         if (error instanceof zod_1.z.ZodError) {
-            return res
-                .status(400)
-                .json({ success: false, errors: error.errors });
+            return res.status(400).json({
+                success: false,
+                errors: error.errors,
+            });
         }
-        return res
-            .status(500)
-            .json({ success: false, message: "Internal Server Error" });
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 exports.createContent = createContent;
@@ -111,12 +123,17 @@ const updateContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const validatedData = (0, validateRequest_1.validateRequest)(validation_1.updateContentSchema, req, res);
         if (!validatedData)
             return;
-        const { content_title, content_description, content_link, tag } = validatedData;
-        // Check if content exists
+        const { content_title, content_description, content_link, tag, type } = validatedData;
         const existingContent = yield prisma.content.findUnique({
             where: { content_id: req.params.content_id },
         });
-        const content_tag = yield prisma.tag.findUnique({
+        if (!existingContent) {
+            return res.status(404).json({
+                success: false,
+                message: "Content not found",
+            });
+        }
+        const content_tag = yield prisma.tag.findFirst({
             where: {
                 name: tag,
             },
@@ -127,10 +144,15 @@ const updateContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 message: "Tag not Found or Invalid Tag",
             });
         }
-        if (!existingContent) {
+        const content_type = yield prisma.type.findFirst({
+            where: {
+                type_name: type,
+            },
+        });
+        if (!content_type) {
             return res.status(404).json({
                 success: false,
-                message: "Content not found",
+                message: "Type not Found or Invalid Type",
             });
         }
         const updatedContent = yield prisma.content.update({
@@ -138,10 +160,11 @@ const updateContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 content_id: req.params.content_id,
             },
             data: {
-                content_title: content_title,
-                content_description: content_description,
-                content_link: content_link,
-                tag_id: content_tag.tag_id,
+                content_title,
+                content_description,
+                content_link,
+                tags: { connect: [{ tag_id: content_tag.tag_id }] },
+                type_id: content_type.type_id,
             },
         });
         return res.status(200).json({
@@ -153,14 +176,14 @@ const updateContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         console.log(error);
         if (error instanceof zod_1.z.ZodError) {
-            return res
-                .status(400)
-                .json({ success: false, errors: error.errors });
+            return res.status(400).json({
+                success: false,
+                errors: error.errors,
+            });
         }
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
-            error: error,
         });
     }
 });

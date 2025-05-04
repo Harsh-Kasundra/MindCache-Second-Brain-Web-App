@@ -51,7 +51,7 @@ const createTag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         // Check if tag already exists
-        const existingTag = yield prisma.tag.findUnique({
+        const existingTag = yield prisma.tag.findFirst({
             where: {
                 name,
             },

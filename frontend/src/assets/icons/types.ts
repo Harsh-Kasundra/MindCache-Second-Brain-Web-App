@@ -1,4 +1,4 @@
 export interface svgprops {
-    height: number;
-    width: number;
+  height: number;
+  width: number;
 }
