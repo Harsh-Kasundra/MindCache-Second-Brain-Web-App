@@ -1,6 +1,6 @@
 export interface ButtonProps {
   text: string;
-  icon?: string;
+  icon?: ReactNode;
   color: string;
   disabled?: boolean;
   onClick?: () => void;
@@ -11,9 +11,15 @@ const bgColors: Record<string, string> = {
   secondary: "bg-secondary-800",
 };
 
-import React from "react";
+import React, { ReactNode } from "react";
 
-const Button: React.FC<ButtonProps> = ({ text, onClick, color, disabled }) => {
+const Button: React.FC<ButtonProps> = ({
+  text,
+  onClick,
+  color,
+  disabled,
+  icon,
+}) => {
   return (
     <div
       className={`flex h-[46px] items-center justify-center gap-2 self-stretch rounded-[5px] p-[10px] text-white hover:cursor-pointer ${bgColors[color]} ${
@@ -24,7 +30,10 @@ const Button: React.FC<ButtonProps> = ({ text, onClick, color, disabled }) => {
       {disabled ? (
         <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
       ) : (
-        <span className="text-lg font-semibold">{text}</span>
+        <span className="flex items-center gap-2 text-lg font-semibold">
+          {icon && <span>{icon}</span>}
+          {text}
+        </span>
       )}
     </div>
   );
