@@ -1,8 +1,15 @@
-import { act, useState } from "react";
+import { useState } from "react";
 import Logo from "../assets/images/mindCachenobg.png";
 
 const SideBar = () => {
-  const [active, SetActive] = useState("All Post");
+  const [active, setActive] = useState("All Post");
+
+  const menuItems = ["All Post", "Instagram", "Twitter", "Youtube", "Document"];
+
+  const baseStyle =
+    "w-full rounded-md p-2 hover:cursor-pointer hover:bg-accent-dark-300";
+  const activeStyle = "bg-primary-600";
+
   return (
     <div
       className="border-secondary-950 h-full border-r bg-black p-4"
@@ -11,49 +18,19 @@ const SideBar = () => {
       }}
     >
       <div className="mb-7">
-        <img src={Logo} alt="" width={150} />
+        <img src={Logo} alt="Logo" width={150} />
       </div>
+
       <div className="dark:text-text-dark-100 flex flex-col items-start justify-center gap-3 text-lg">
-        <div
-          className={`w-full rounded-md p-2 hover:cursor-pointer ${active === "All Post" ? "bg-primary-600" : "hover:bg-accent-dark-300"}`}
-          onClick={() => {
-            SetActive("All Post");
-          }}
-        >
-          All Post
-        </div>
-        <div
-          className={`w-full rounded-md p-2 hover:cursor-pointer ${active === "Instagram" ? "bg-primary-600" : "hover:bg-accent-dark-300"}`}
-          onClick={() => {
-            SetActive("Instagram");
-          }}
-        >
-          Instagram
-        </div>
-        <div
-          className={`w-full rounded-md p-2 hover:cursor-pointer ${active === "Twitter" ? "bg-primary-600" : "hover:bg-accent-dark-300"}`}
-          onClick={() => {
-            SetActive("Twitter");
-          }}
-        >
-          Twitter
-        </div>
-        <div
-          className={`w-full rounded-md p-2 hover:cursor-pointer ${active === "Youtube" ? "bg-primary-600" : "hover:bg-accent-dark-300"}`}
-          onClick={() => {
-            SetActive("Youtube");
-          }}
-        >
-          Youtube
-        </div>
-        <div
-          className={`w-full rounded-md p-2 hover:cursor-pointer ${active === "Document" ? "bg-primary-600" : "hover:bg-accent-dark-300"}`}
-          onClick={() => {
-            SetActive("Document");
-          }}
-        >
-          Document
-        </div>
+        {menuItems.map((item) => (
+          <div
+            key={item}
+            className={`${baseStyle} ${active === item ? activeStyle : ""}`}
+            onClick={() => setActive(item)}
+          >
+            {item}
+          </div>
+        ))}
       </div>
     </div>
   );
