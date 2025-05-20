@@ -17,6 +17,7 @@ model User {
   links      Link[]
   createdAt  DateTime  @default(now())
   updateAt   DateTime  @updatedAt
+  Task       Task[]
 }
 
 model Content {
@@ -65,4 +66,25 @@ model Link {
   user      User     @relation(fields: [user_id], references: [user_id])
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Task {
+  task_id          String    @id @default(cuid())
+  task_title       String
+  task_description String?
+  task_due_date    DateTime
+  task_due_time    DateTime?
+  task_type        String
+  task_priority    String
+  completed        Boolean   @default(false)
+  user_id          String
+  user             User      @relation(fields: [user_id], references: [user_id])
+  createdAt        DateTime  @default(now())
+  updateAt         DateTime  @updatedAt
 }
