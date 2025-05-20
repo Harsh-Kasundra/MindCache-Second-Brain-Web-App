@@ -5,6 +5,8 @@ import { RecoilRoot } from "recoil";
 
 createRoot(document.getElementById("root")!).render(
   <RecoilRoot>
-    <App />
+    <div className="bg-background-light dark:bg-black">
+      <App />
+    </div>
   </RecoilRoot>,
 );

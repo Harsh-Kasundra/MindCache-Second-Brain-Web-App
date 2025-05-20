@@ -92,7 +92,7 @@ const Signup = () => {
         <div
           className="bg-background-light mx-10 flex max-w-[498px] flex-col items-center gap-[10px] rounded-[10px] p-[2px] md:mx-0 md:p-[10px] dark:bg-black"
           style={{
-            boxShadow: "0px 0px 10px 0px var(--color-accent-light-800)",
+            boxShadow: "0px 0px 5px 0px var(--color-accent-light-800)",
           }}
         >
           <div className="flex flex-col items-start gap-[30px] self-stretch px-[30px] py-6">

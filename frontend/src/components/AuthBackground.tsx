@@ -10,8 +10,8 @@ const AuthBackground: React.FC<CustomBackgroundProps> = ({ children }) => {
       style={{
         opacity: 1,
         backgroundImage:
-          "linear-gradient(#45454550 1px, transparent 1px), linear-gradient(to right, #45454550 1px,transparent 0px)",
-        backgroundSize: "50px 50px",
+          "linear-gradient(#ff620035 0.1px, transparent 1px), linear-gradient(to right, #ff620035 0.3px,transparent 0px)",
+        backgroundSize: "80px 80px",
       }}
     >
       <div className="h-full overflow-y-auto">{children}</div>
