@@ -15,10 +15,8 @@ export const getTasks = async (req: Request, res: Response): Promise<any> => {
     try {
         const user_id = req.userId;
 
-        const showCompleted = req.query.completed === "true";
-
         const tasks = await prisma.task.findMany({
-            where: {user_id, completed: showCompleted},
+            where: {user_id},
             orderBy: {task_due_date: "asc"},
         });
 

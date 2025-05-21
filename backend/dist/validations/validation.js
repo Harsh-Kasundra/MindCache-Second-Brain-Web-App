@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateContentSchema = exports.createContentSchema = exports.createUserSchema = void 0;
+exports.updateTaskSchema = exports.createTaskSchema = exports.updateContentSchema = exports.createContentSchema = exports.createUserSchema = void 0;
 const zod_1 = require("zod");
 exports.createUserSchema = zod_1.z.object({
     username: zod_1.z
@@ -54,4 +54,22 @@ exports.updateContentSchema = zod_1.z.object({
         "Image",
         "Text",
     ]),
+});
+exports.createTaskSchema = zod_1.z.object({
+    task_title: zod_1.z.string().min(1),
+    task_description: zod_1.z.string().optional(),
+    task_due_date: zod_1.z.string().refine((val) => !isNaN(Date.parse(val)), {
+        message: "Invalid date format",
+    }),
+    task_due_time: zod_1.z
+        .string()
+        .optional()
+        .refine((val) => !val || !isNaN(Date.parse(`1970-01-01T${val}Z`)), {
+        message: "Invalid time format",
+    }),
+    task_type: zod_1.z.string().min(1),
+    task_priority: zod_1.z.enum(["LOW", "MEDIUM", "HIGH"]), // match your enum in Prisma
+});
+exports.updateTaskSchema = exports.createTaskSchema.partial().extend({
+    completed: zod_1.z.boolean().optional(),
 });
