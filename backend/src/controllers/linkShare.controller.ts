@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-import { randomBytes } from "crypto";
-import { Request, Response } from "express";
+import {PrismaClient} from "@prisma/client";
+import {randomBytes} from "crypto";
+import {Request, Response} from "express";
 
 const prisma = new PrismaClient();
 
@@ -22,13 +22,13 @@ export const createLink = async (req: Request, res: Response): Promise<any> => {
         const hash = randomBytes(15).toString("hex");
 
         const existingLink = await prisma.link.findUnique({
-            where: { user_id: userId },
+            where: {user_id: userId},
         });
 
         if (existingLink) {
             const link = await prisma.link.update({
-                where: { user_id: userId },
-                data: { hash },
+                where: {user_id: userId},
+                data: {hash},
             });
             return res.status(200).json({
                 success: true,
@@ -67,7 +67,7 @@ export const deleteLink = async (req: Request, res: Response): Promise<any> => {
         const userId = req.userId;
 
         const existingLink = await prisma.link.findUnique({
-            where: { user_id: userId },
+            where: {user_id: userId},
         });
 
         if (!existingLink) {
@@ -79,12 +79,12 @@ export const deleteLink = async (req: Request, res: Response): Promise<any> => {
 
         // Delete the link
         const deletedLinks = await prisma.link.delete({
-            where: { user_id: userId },
+            where: {user_id: userId},
         });
 
         return res.status(200).json({
             success: true,
-            message: "all the shareabla links are deleted",
+            message: "all the shareable links are deleted",
             deletedLinks,
         });
     } catch (error) {
@@ -97,7 +97,7 @@ export const deleteLink = async (req: Request, res: Response): Promise<any> => {
 };
 
 /**
- * @route GET /api/v1/share/:sharelink
+ * @route GET /api/v1/share/:shareLink
  * @desc Get content based on share link
  * @access public
  */
@@ -105,11 +105,11 @@ export const getLinkContent = async (
     req: Request,
     res: Response
 ): Promise<any> => {
-    const { sharelink } = req.params;
+    const {shareLink} = req.params;
     try {
         const link = await prisma.link.findUnique({
             where: {
-                hash: sharelink,
+                hash: shareLink,
             },
             include: {
                 user: true,

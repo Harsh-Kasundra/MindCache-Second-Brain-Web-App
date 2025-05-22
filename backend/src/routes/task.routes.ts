@@ -7,6 +7,6 @@ router.get("/", isAuthenticated, taskController.getTasks);
 router.post("/", isAuthenticated, taskController.createTask);
 router.put("/:task_id", isAuthenticated, taskController.updateTask);
 router.delete("/:task_id", isAuthenticated, taskController.deleteTask);
-router.put("/:task_id/done", isAuthenticated, taskController.markDoneTask);
+router.patch("/:task_id/done", isAuthenticated, taskController.markDoneTask);
 
 export default router;
