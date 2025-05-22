@@ -5,16 +5,34 @@ import DashboardIcon from "../assets/icons/DashboardIcon";
 import ContentIcon from "../assets/icons/ContentIcon";
 import TodoListIcon from "../assets/icons/TodoListIcon";
 import SettingsIcon from "../assets/icons/SettingsIcon";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
+  const navigate = useNavigate();
   const [active, setActive] = useState("Dashboard");
   const [logo, setLogo] = useState("");
 
   const menuItems = [
-    { label: "Dashboard", icon: <DashboardIcon height={20} width={20} /> },
-    { label: "Content Library", icon: <ContentIcon height={20} width={20} /> },
-    { label: "Todo List", icon: <TodoListIcon height={20} width={20} /> },
-    { label: "Setting", icon: <SettingsIcon height={20} width={20} /> },
+    {
+      label: "Dashboard",
+      route: "/",
+      icon: <DashboardIcon height={20} width={20} />,
+    },
+    {
+      label: "Content Library",
+      route: "/contentLibrary",
+      icon: <ContentIcon height={20} width={20} />,
+    },
+    {
+      label: "Todo List",
+      route: "/todoList",
+      icon: <TodoListIcon height={20} width={20} />,
+    },
+    {
+      label: "Settings",
+      route: "/settings",
+      icon: <SettingsIcon height={20} width={20} />,
+    },
   ];
 
   const baseStyle =
@@ -33,11 +51,14 @@ const SideBar = () => {
       </div>
 
       <div className="dark:text-text-dark-100 flex flex-col items-start justify-center gap-3 text-lg">
-        {menuItems.map(({ label, icon }) => (
+        {menuItems.map(({ label, icon, route }) => (
           <div
             key={label}
             className={`${baseStyle} ${active === label ? activeStyle : ""} flex items-center gap-2`}
-            onClick={() => setActive(label)}
+            onClick={() => {
+              setActive(label);
+              navigate(route);
+            }}
           >
             {icon}
             <span>{label}</span>

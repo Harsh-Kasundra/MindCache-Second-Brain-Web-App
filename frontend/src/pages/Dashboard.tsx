@@ -7,6 +7,7 @@ import StatCard from "../components/StatCard";
 import RecentContentCard from "../components/RecentContentCard";
 import { useState } from "react";
 import TaskItem from "../components/TaskItem";
+import PlusIcon from "../assets/icons/PlusIcon";
 
 interface Task {
   text: string;
@@ -52,13 +53,17 @@ const Dashboard = () => {
   return (
     <div className="bg-background-light h-full px-5 xl:px-10 dark:bg-black">
       <div className="dark:text-text-dark-100 text-text-light-950 flex justify-between p-3 pt-7 pb-1">
-        <div>
-          <div className="text-4xl font-semibold">Dashboard</div>
-          <div className="text-md font-normal">
+        <div className="flex flex-col justify-start gap-1">
+          <div className="text-3xl font-semibold">Dashboard</div>
+          <div className="text-md dark:text-text-dark-100/70 text-text-light-950 font-normal">
             Welcome to your Second Brain
           </div>
         </div>
-        <Button color="primary" text="Add Content" />
+        <Button
+          color="primary"
+          text="Add Content"
+          icon={<PlusIcon height={25} width={25} />}
+        />
       </div>
       <div className="mt-5 flex flex-col gap-10 p-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

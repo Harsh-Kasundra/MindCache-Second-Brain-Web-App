@@ -3,6 +3,7 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
+import ContentLibrary from "./pages/ContentLibrary";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route element={<Signup />} path="/auth/signup" />
         <Route element={<Layout />} path="/">
           <Route element={<Dashboard />} index />
+          <Route element={<ContentLibrary />} path="/contentLibrary" />
         </Route>
       </Routes>
     </Router>
