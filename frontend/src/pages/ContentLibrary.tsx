@@ -73,7 +73,7 @@ const ContentLibrary = () => {
         );
 
   return (
-    <div className="bg-background-light h-full px-5 xl:px-10 dark:bg-black">
+    <div className="bg-background-light mx-auto h-full w-full max-w-screen-2xl px-5 xl:px-10 dark:bg-black">
       <div className="dark:text-text-dark-100 text-text-light-950 flex justify-between p-3 pt-7 pb-1">
         <div className="flex flex-col justify-start gap-1">
           <div className="text-3xl font-semibold">Content Library</div>
@@ -88,17 +88,19 @@ const ContentLibrary = () => {
         />
       </div>
 
-      <div className="mt-5 p-4">
-        <ContentFilterTabs onFilterChange={handleFilterChange} />
-
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredContent.map((content, index) => (
-            <EmbeddedContent key={index} {...content} />
-          ))}
+      <div className="mb-8 w-full overflow-x-auto">
+        <div className="flex w-max space-x-4">
+          <ContentFilterTabs onFilterChange={handleFilterChange} />
         </div>
-
-        <Pagination totalPages={8} onPageChange={handlePageChange} />
       </div>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredContent.map((content, index) => (
+          <EmbeddedContent key={index} {...content} />
+        ))}
+      </div>
+
+      {/* <Pagination totalPages={8} onPageChange={handlePageChange} /> */}
     </div>
   );
 };

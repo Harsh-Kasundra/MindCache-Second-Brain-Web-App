@@ -30,7 +30,7 @@ const Button: React.FC<ButtonProps> = ({
       {disabled ? (
         <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
       ) : (
-        <span className="flex items-center gap-2 text-lg font-semibold">
+        <span className="text-md flex items-center gap-1 font-semibold sm:text-lg">
           {icon && <span>{icon}</span>}
           {text}
         </span>

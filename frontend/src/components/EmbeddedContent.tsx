@@ -57,7 +57,7 @@ const EmbeddedContent: React.FC<ContentProps> = ({
       {/* Embedded Content */}
       <div className="group relative w-full max-w-full overflow-hidden rounded-xl bg-black shadow-md">
         {/* Media Container */}
-        <div className="aspect-square h-full w-full">
+        <div className="aspect-video h-full w-full">
           {type === "Youtube" && content_link && (
             <iframe
               className="h-full w-full"

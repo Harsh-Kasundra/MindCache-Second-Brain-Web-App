@@ -8,12 +8,14 @@ import RecentContentCard from "../components/RecentContentCard";
 import { useState } from "react";
 import TaskItem from "../components/TaskItem";
 import PlusIcon from "../assets/icons/PlusIcon";
+import { useNavigate } from "react-router-dom";
 
 interface Task {
   text: string;
   completed: boolean;
 }
 const Dashboard = () => {
+  const navigate = useNavigate();
   const contentData = [
     {
       icon: <TwitterIcon height={20} width={20} />,
@@ -79,7 +81,9 @@ const Dashboard = () => {
                 Recent Content
               </h3>
               <a
-                href="#contentLibrary"
+                onClick={() => {
+                  navigate("/contentLibrary");
+                }}
                 className="text-primary-600 text-sm hover:underline"
               >
                 View All
@@ -97,7 +101,7 @@ const Dashboard = () => {
                 Today's Tasks
               </h3>
               <a
-                href="#contentLibrary"
+                onClick={() => navigate("/todoList")}
                 className="text-primary-600 text-sm hover:underline"
               >
                 View All

@@ -6,7 +6,7 @@ const Layout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
+    <div className="flex h-screen w-full overflow-y-hidden">
       {/* Mobile sidebar overlay */}
       <div
         className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${

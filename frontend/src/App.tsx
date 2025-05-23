@@ -4,6 +4,7 @@ import Signup from "./pages/Signup";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import ContentLibrary from "./pages/ContentLibrary";
+import TodoList from "./pages/TodoList";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route element={<Layout />} path="/">
           <Route element={<Dashboard />} index />
           <Route element={<ContentLibrary />} path="/contentLibrary" />
+          <Route element={<TodoList />} path="/todoList" />
         </Route>
       </Routes>
     </Router>

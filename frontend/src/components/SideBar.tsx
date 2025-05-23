@@ -5,12 +5,14 @@ import DashboardIcon from "../assets/icons/DashboardIcon";
 import ContentIcon from "../assets/icons/ContentIcon";
 import TodoListIcon from "../assets/icons/TodoListIcon";
 import SettingsIcon from "../assets/icons/SettingsIcon";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SideBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location);
   const [active, setActive] = useState("Dashboard");
-  const [logo, setLogo] = useState("");
+  const [logo, setLogo] = useState(DarkLogo);
 
   const menuItems = [
     {
@@ -41,8 +43,16 @@ const SideBar = () => {
 
   const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
   useEffect(() => {
+    console.log(location);
+
+    const current = menuItems.find((item) => item.route === location.pathname);
+    if (current) setActive(current.label);
+
+    const isDarkMode = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     setLogo(isDarkMode ? DarkLogo : LightLogo);
-  }, [isDarkMode]);
+  }, [location.pathname, isDarkMode]);
 
   return (
     <div className="border-primary-600/35 bg-secondary-200 dark:bg-secondary-950 h-full border-r p-2">
