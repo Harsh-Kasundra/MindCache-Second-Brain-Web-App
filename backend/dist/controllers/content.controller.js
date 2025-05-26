@@ -9,33 +9,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteContent = exports.updateContent = exports.createContent = exports.getContent = void 0;
+exports.contentStats = exports.deleteContent = exports.updateContent = exports.createContent = exports.getContent = void 0;
 const client_1 = require("@prisma/client");
 const validation_1 = require("../validations/validation");
 const zod_1 = require("zod");
 const validateRequest_1 = require("../utils/validateRequest");
 const prisma = new client_1.PrismaClient();
 /**
- * @route GET /api/v1/content/
+ * @route GET /api/v1/content/?limit=3sort=desc
  * @desc get all the content
  * @access private
  */
 const getContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user_id = req.userId;
+        // Optional query parameters
+        const limit = req.query.limit
+            ? parseInt(req.query.limit, 10)
+            : undefined;
+        const sort = req.query.sort === "desc" ? "desc" : "asc";
         const content = yield prisma.content.findMany({
-            where: {
-                user_id: user_id,
+            where: { user_id },
+            orderBy: {
+                createdAt: sort,
+            },
+            take: limit,
+            include: {
+                Type: true,
+                tags: true,
             },
         });
         return res.status(200).json({
             success: true,
-            message: "content Found successfully ",
+            message: "Content found successfully",
             content,
         });
     }
     catch (error) {
-        console.error("Error fetching Content:", error);
+        console.error("Error fetching content:", error);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
@@ -218,7 +229,7 @@ const deleteContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        console.error("Error deleting meeting:", error);
+        console.error("Error deleting Content:", error);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
@@ -226,3 +237,41 @@ const deleteContent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteContent = deleteContent;
+/**
+ * @route GET /api/v1/content/contentStats
+ * @desc get the count of the content
+ * @access private
+ */
+const contentStats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const total = yield prisma.content.count();
+        const getCount = (type) => prisma.content.count({
+            where: {
+                Type: {
+                    type_name: type,
+                },
+            },
+        });
+        const [instagram, twitter, youtube, medium, text, image] = yield Promise.all([
+            getCount("Instagram"),
+            getCount("Twitter"),
+            getCount("Youtube"),
+            getCount("Medium"),
+            getCount("Text"),
+            getCount("Image"),
+        ]);
+        return res.status(200).json({
+            success: true,
+            message: "Content stats fetched successfully",
+            counts: { total, instagram, twitter, youtube, medium, text, image },
+        });
+    }
+    catch (error) {
+        console.error("Error Counting content:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+});
+exports.contentStats = contentStats;

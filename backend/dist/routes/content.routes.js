@@ -44,4 +44,5 @@ router.post("/", authMiddleware_1.isAuthenticated, contentController.createConte
 router.get("/", authMiddleware_1.isAuthenticated, contentController.getContent);
 router.put("/:content_id", authMiddleware_1.isAuthenticated, contentController.updateContent);
 router.delete("/:content_id", authMiddleware_1.isAuthenticated, contentController.deleteContent);
+router.get("/stats", authMiddleware_1.isAuthenticated, contentController.contentStats);
 exports.default = router;

@@ -9,12 +9,12 @@ const cors_1 = __importDefault(require("cors"));
 const sessionConfig_1 = __importDefault(require("./config/sessionConfig"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const index_1 = __importDefault(require("./routes/index"));
-dotenv_1.default.config;
+dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
+    origin: "http://localhost:5173", // ✅ must match your frontend
+    credentials: true, // ✅ for cookies or Authorization headers
 }));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());

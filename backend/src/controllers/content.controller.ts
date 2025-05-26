@@ -1,34 +1,48 @@
-import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import {PrismaClient} from "@prisma/client";
+import {Request, Response} from "express";
 import {
     createContentSchema,
     updateContentSchema,
 } from "../validations/validation";
-import { z } from "zod";
-import { validateRequest } from "../utils/validateRequest";
+import {z} from "zod";
+import {validateRequest} from "../utils/validateRequest";
 
 const prisma = new PrismaClient();
 
 /**
- * @route GET /api/v1/content/
+ * @route GET /api/v1/content/?limit=3sort=desc
  * @desc get all the content
  * @access private
  */
 export const getContent = async (req: Request, res: Response): Promise<any> => {
     try {
         const user_id = req.userId;
+
+        // Optional query parameters
+        const limit = req.query.limit
+            ? parseInt(req.query.limit as string, 10)
+            : undefined;
+        const sort = req.query.sort === "desc" ? "desc" : "asc";
+
         const content = await prisma.content.findMany({
-            where: {
-                user_id: user_id,
+            where: {user_id},
+            orderBy: {
+                createdAt: sort,
+            },
+            take: limit,
+            include: {
+                Type: true,
+                tags: true,
             },
         });
+
         return res.status(200).json({
             success: true,
-            message: "content Found successfully ",
+            message: "Content found successfully",
             content,
         });
     } catch (error) {
-        console.error("Error fetching Content:", error);
+        console.error("Error fetching content:", error);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
@@ -49,7 +63,7 @@ export const createContent = async (
         const validatedData = validateRequest(createContentSchema, req, res);
         if (!validatedData) return;
 
-        const { content_title, content_description, content_link, tag, type } =
+        const {content_title, content_description, content_link, tag, type} =
             validatedData;
 
         const userId = req.userId;
@@ -91,7 +105,7 @@ export const createContent = async (
                 content_title,
                 content_description,
                 content_link,
-                tags: { connect: [{ tag_id: content_tag.tag_id }] },
+                tags: {connect: [{tag_id: content_tag.tag_id}]},
                 type_id: content_type.type_id,
                 user_id: userId,
             },
@@ -129,11 +143,11 @@ export const updateContent = async (
         const validatedData = validateRequest(updateContentSchema, req, res);
         if (!validatedData) return;
 
-        const { content_title, content_description, content_link, tag, type } =
+        const {content_title, content_description, content_link, tag, type} =
             validatedData;
 
         const existingContent = await prisma.content.findUnique({
-            where: { content_id: req.params.content_id },
+            where: {content_id: req.params.content_id},
         });
 
         if (!existingContent) {
@@ -177,7 +191,7 @@ export const updateContent = async (
                 content_title,
                 content_description,
                 content_link,
-                tags: { connect: [{ tag_id: content_tag.tag_id }] },
+                tags: {connect: [{tag_id: content_tag.tag_id}]},
                 type_id: content_type.type_id,
             },
         });
@@ -215,7 +229,7 @@ export const deleteContent = async (
     try {
         // Check if content exists
         const existingContent = await prisma.content.findUnique({
-            where: { content_id: content_id },
+            where: {content_id: content_id},
         });
 
         if (!existingContent) {
@@ -235,7 +249,52 @@ export const deleteContent = async (
             deletedContent,
         });
     } catch (error) {
-        console.error("Error deleting meeting:", error);
+        console.error("Error deleting Content:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+/**
+ * @route GET /api/v1/content/contentStats
+ * @desc get the count of the content
+ * @access private
+ */
+export const contentStats = async (
+    req: Request,
+    res: Response
+): Promise<any> => {
+    try {
+        const total = await prisma.content.count();
+
+        const getCount = (type: string) =>
+            prisma.content.count({
+                where: {
+                    Type: {
+                        type_name: type as any,
+                    },
+                },
+            });
+
+        const [instagram, twitter, youtube, medium, text, image] =
+            await Promise.all([
+                getCount("Instagram"),
+                getCount("Twitter"),
+                getCount("Youtube"),
+                getCount("Medium"),
+                getCount("Text"),
+                getCount("Image"),
+            ]);
+
+        return res.status(200).json({
+            success: true,
+            message: "Content stats fetched successfully",
+            counts: {total, instagram, twitter, youtube, medium, text, image},
+        });
+    } catch (error) {
+        console.error("Error Counting content:", error);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",

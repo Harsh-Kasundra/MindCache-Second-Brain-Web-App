@@ -6,14 +6,14 @@ import cookieParser from "cookie-parser";
 
 import rootRouter from "./routes/index";
 
-dotenv.config;
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL,
-        credentials: true,
+        origin: "http://localhost:5173", // ✅ must match your frontend
+        credentials: true, // ✅ for cookies or Authorization headers
     })
 );
 

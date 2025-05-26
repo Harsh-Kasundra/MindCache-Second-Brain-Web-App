@@ -42,5 +42,5 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.post("/", authMiddleware_1.isAuthenticated, linkController.createLink);
 router.delete("/", authMiddleware_1.isAuthenticated, linkController.deleteLink);
-router.get("/:sharelink", linkController.getLinkContent);
+router.get("/:shareLink", linkController.getLinkContent);
 exports.default = router;

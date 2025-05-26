@@ -86,7 +86,7 @@ const deleteLink = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
         return res.status(200).json({
             success: true,
-            message: "all the shareabla links are deleted",
+            message: "all the shareable links are deleted",
             deletedLinks,
         });
     }
@@ -100,16 +100,16 @@ const deleteLink = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.deleteLink = deleteLink;
 /**
- * @route GET /api/v1/share/:sharelink
+ * @route GET /api/v1/share/:shareLink
  * @desc Get content based on share link
  * @access public
  */
 const getLinkContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { sharelink } = req.params;
+    const { shareLink } = req.params;
     try {
         const link = yield prisma.link.findUnique({
             where: {
-                hash: sharelink,
+                hash: shareLink,
             },
             include: {
                 user: true,

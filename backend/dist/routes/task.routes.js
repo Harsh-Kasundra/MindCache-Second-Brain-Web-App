@@ -44,5 +44,5 @@ router.get("/", authMiddleware_1.isAuthenticated, taskController.getTasks);
 router.post("/", authMiddleware_1.isAuthenticated, taskController.createTask);
 router.put("/:task_id", authMiddleware_1.isAuthenticated, taskController.updateTask);
 router.delete("/:task_id", authMiddleware_1.isAuthenticated, taskController.deleteTask);
-router.put("/:task_id/done", authMiddleware_1.isAuthenticated, taskController.markDoneTask);
+router.patch("/:task_id/done", authMiddleware_1.isAuthenticated, taskController.markDoneTask);
 exports.default = router;
