@@ -5,37 +5,73 @@ import InstagramIcon from "../assets/icons/InstagramIcon";
 import YTIcon from "../assets/icons/YTIcon";
 import StatCard from "../components/StatCard";
 import RecentContentCard from "../components/RecentContentCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskItem from "../components/TaskItem";
 import PlusIcon from "../assets/icons/PlusIcon";
 import { useNavigate } from "react-router-dom";
+import { fetchContentStats, getRecentContents } from "../api/content";
 
 interface Task {
   text: string;
   completed: boolean;
 }
+
+type ContentStats = {
+  total: number;
+  instagram: number;
+  twitter: number;
+  youtube: number;
+};
+type ContentProp = {
+  type: string;
+  title: string;
+  time: string;
+  description: string;
+  tags: string;
+  views: number;
+};
 const Dashboard = () => {
   const navigate = useNavigate();
-  const contentData = [
-    {
-      icon: <TwitterIcon height={20} width={20} />,
-      title: "Twitter Thread on AI Development",
-      time: "2h ago",
-      description:
-        "A comprehensive thread on the latest developments in AI and machine learning...",
-      tags: "AI, Tech",
-      views: 128,
-    },
-    {
-      icon: <InstagramIcon height={20} width={20} />,
-      title: "Minimalist Workspace Setup",
-      time: "1d ago",
-      description:
-        "My latest workspace setup with minimalist design principles and productivity hacks...",
-      tags: "Productivity, Design",
-      views: 86,
-    },
-  ];
+
+  const [stats, setStats] = useState<ContentStats | null>(null);
+  const [contentData, setContentData] = useState<ContentProp[] | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/auth/signup");
+    }
+
+    const getStats = async () => {
+      try {
+        const res = await fetchContentStats();
+        if (res.success) setStats(res.counts);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    const getContentData = async () => {
+      try {
+        const res = await getRecentContents();
+        if (res.success) {
+          const mappedData: ContentProp[] = res.content.map((item: any) => ({
+            type: item.Type?.type_name ?? "Unknown",
+            title: item.content_title,
+            time: new Date(item.createdAt).toLocaleString(), // format timestamp
+            description: item.content_description,
+            tags: item.tags.map((tag: any) => tag.name).join(", "), // comma-separated string
+            views: item.views ?? 0, // default to 0 if missing
+          }));
+
+          setContentData(mappedData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getStats();
+    getContentData();
+  }, []);
 
   const [tasks, setTasks] = useState<Task[]>([
     { text: "Research content ideas for next week", completed: false },
@@ -55,6 +91,7 @@ const Dashboard = () => {
   return (
     <div className="bg-background-light h-full px-5 xl:px-10 dark:bg-black">
       <div className="dark:text-text-dark-100 text-text-light-950 flex justify-between p-3 pt-7 pb-1">
+        {/* header */}
         <div className="flex flex-col justify-start gap-1">
           <div className="text-3xl font-semibold">Dashboard</div>
           <div className="text-md dark:text-text-dark-100/70 text-text-light-950 font-normal">
@@ -68,13 +105,33 @@ const Dashboard = () => {
         />
       </div>
       <div className="mt-5 flex flex-col gap-10 p-4">
+        {/* Stats Card section */}
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard title="Total Content" value={128} Icon={TotalPostIcon} />
-          <StatCard title="Instagram Posts" value={128} Icon={InstagramIcon} />
-          <StatCard title="Twitter Posts" value={128} Icon={TwitterIcon} />
-          <StatCard title="YouTube Posts" value={128} Icon={YTIcon} />
+          <StatCard
+            title="Total Content"
+            value={stats?.total ?? 0}
+            Icon={TotalPostIcon}
+          />
+          <StatCard
+            title="Instagram Posts"
+            value={stats?.instagram ?? 0}
+            Icon={InstagramIcon}
+          />
+          <StatCard
+            title="Twitter Posts"
+            value={stats?.twitter ?? 0}
+            Icon={TwitterIcon}
+          />
+          <StatCard
+            title="YouTube Posts"
+            value={stats?.youtube ?? 0}
+            Icon={YTIcon}
+          />
         </div>
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+          {/* Recent Content section */}
+
           <div className="dark:bg-secondary-950 bg-secondary-200 border-primary-600/30 rounded-xl border p-6 xl:col-span-2">
             <div className="mb-6 flex items-center justify-between">
               <h3 className="dark:text-text-dark-100 text-xl font-bold">
@@ -90,11 +147,18 @@ const Dashboard = () => {
               </a>
             </div>
             <div className="space-y-4">
-              {contentData.map((item, index) => (
-                <RecentContentCard key={index} {...item} />
-              ))}
+              {contentData ? (
+                contentData.map((item, index) => (
+                  <RecentContentCard key={index} {...item} />
+                ))
+              ) : (
+                <h3>no data found</h3>
+              )}
             </div>
           </div>
+
+          {/* Todays Task Section */}
+
           <div className="border-primary-600/30 dark:bg-secondary-950 bg-secondary-200 rounded-xl border p-6 xl:col-span-1">
             <div className="mb-6 flex items-center justify-between">
               <h3 className="dark:text-text-dark-100 text-xl font-bold">

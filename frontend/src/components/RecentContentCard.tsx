@@ -1,7 +1,12 @@
 import { ReactNode } from "react";
+import YTIcon from "../assets/icons/YTIcon";
+import InstagramIcon from "../assets/icons/InstagramIcon";
+import TwitterIcon from "../assets/icons/TwitterIcon";
+import ImageIcon from "../assets/icons/ImageIcon";
+import NotesIcon from "../assets/icons/NotesIcon";
 
 export type ContentCardProps = {
-  icon: ReactNode;
+  type: string;
   title: string;
   time: string;
   description: string;
@@ -9,7 +14,7 @@ export type ContentCardProps = {
   views: number;
 };
 const ContentCard = ({
-  icon,
+  type,
   title,
   time,
   description,
@@ -19,7 +24,7 @@ const ContentCard = ({
   return (
     <div className="border-primary-600/30 bg-background-light hover:border-primary-600/50 rounded-lg border p-4 transition-colors duration-200 dark:bg-black">
       <div className="flex items-start">
-        <div className="bg-primary-600/20 mr-4 rounded-lg p-2">{icon}</div>
+        <div className="bg-primary-600/20 mr-4 rounded-lg p-2">{type}</div>
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <h4 className="dark:text-text-dark-100 text-text-light-950 font-medium">
@@ -79,3 +84,22 @@ const ContentCard = ({
 };
 
 export default ContentCard;
+
+const getIcon = (type: ContentProps["type"]) => {
+  switch (type) {
+    case "Youtube":
+      return <YTIcon height={25} width={25} />;
+    case "Instagram":
+      return <InstagramIcon height={25} width={25} />;
+    case "Twitter":
+      return <TwitterIcon height={25} width={25} />;
+    case "Image":
+      return <ImageIcon height={25} width={25} />;
+    case "Text":
+      return <NotesIcon height={25} width={25} />;
+    case "Medium":
+      return <MediumIcon />;
+    default:
+      return <PlayIcon />;
+  }
+};

@@ -15,7 +15,7 @@ const loadTwitterScript = () => {
   }
 };
 
-type ContentProps = {
+export type ContentProps = {
   content_title: string;
   content_description: string;
   content_link?: string;
