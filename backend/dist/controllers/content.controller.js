@@ -23,26 +23,38 @@ const prisma = new client_1.PrismaClient();
 const getContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user_id = req.userId;
-        // Optional query parameters
-        const limit = req.query.limit
-            ? parseInt(req.query.limit, 10)
-            : undefined;
+        const limit = parseInt(req.query.limit || "6", 10);
+        const page = parseInt(req.query.page || "1", 10);
+        const skip = (page - 1) * limit;
         const sort = req.query.sort === "desc" ? "desc" : "asc";
+        const contentType = req.query.type;
         const content = yield prisma.content.findMany({
-            where: { user_id },
-            orderBy: {
-                createdAt: sort,
-            },
+            where: Object.assign({ user_id }, (contentType && {
+                Type: {
+                    is: {
+                        type_name: contentType,
+                    },
+                },
+            })),
+            orderBy: { createdAt: sort },
+            skip,
             take: limit,
-            include: {
-                Type: true,
-                tags: true,
-            },
+            include: { Type: true, tags: true },
+        });
+        const totalCount = yield prisma.content.count({
+            where: Object.assign({ user_id }, (contentType && {
+                Type: {
+                    is: {
+                        type_name: contentType,
+                    },
+                },
+            })),
         });
         return res.status(200).json({
             success: true,
             message: "Content found successfully",
             content,
+            totalCount,
         });
     }
     catch (error) {

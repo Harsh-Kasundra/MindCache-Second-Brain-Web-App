@@ -19,6 +19,6 @@ const generateToken = (userId) => {
 exports.generateToken = generateToken;
 // Verify token and decode the 'user_id'
 const verifyToken = (token) => {
-    return jsonwebtoken_1.default.verify(token, JWT_SECRET);
+    return jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
 };
 exports.verifyToken = verifyToken;

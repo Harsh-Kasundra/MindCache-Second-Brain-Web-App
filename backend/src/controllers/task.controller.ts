@@ -169,6 +169,7 @@ export const markDoneTask = async (
 ): Promise<any> => {
     try {
         const {task_id} = req.params;
+        const {completed} = req.body;
 
         const existingTask = await prisma.task.findUnique({where: {task_id}});
         if (!existingTask) {
@@ -180,7 +181,7 @@ export const markDoneTask = async (
         const markedTask = await prisma.task.update({
             where: {task_id},
             data: {
-                completed: true,
+                completed: !completed,
             },
         });
 

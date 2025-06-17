@@ -159,6 +159,7 @@ exports.deleteTask = deleteTask;
 const markDoneTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { task_id } = req.params;
+        const { completed } = req.body;
         const existingTask = yield prisma.task.findUnique({ where: { task_id } });
         if (!existingTask) {
             return res
@@ -168,7 +169,7 @@ const markDoneTask = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const markedTask = yield prisma.task.update({
             where: { task_id },
             data: {
-                completed: true,
+                completed: !completed,
             },
         });
         res.status(200).json({

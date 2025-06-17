@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, {JwtPayload} from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -15,10 +15,10 @@ if (!JWT_SECRET) {
 
 // Generate token with 'user_id' to match verifyToken expectations
 export const generateToken = (userId: string) => {
-    return jwt.sign({ user_id: userId }, JWT_SECRET, { expiresIn: "1d" });
+    return jwt.sign({user_id: userId}, JWT_SECRET, {expiresIn: "1d"});
 };
 
 // Verify token and decode the 'user_id'
 export const verifyToken = (token: string) => {
-    return jwt.verify(token, JWT_SECRET) as JwtPayloadWithId;
+    return jwt.verify(token, process.env.JWT_SECRET as string);
 };
