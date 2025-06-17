@@ -1,12 +1,22 @@
 import React from "react";
 
 interface TaskItemProps {
-  text: string;
+  task_id: string;
+  task_title: string;
+  task_description?: string;
+  task_due_date: Date;
+  task_due_time: string;
+  task_type: string;
+  task_priority: string;
   completed: boolean;
   onToggle: () => void;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ text, completed, onToggle }) => {
+const TaskItem: React.FC<Partial<TaskItemProps>> = ({
+  task_title,
+  completed,
+  onToggle,
+}) => {
   return (
     <div className="border-primary-800/30 bg-background-light flex items-center rounded-lg border p-3 dark:bg-black">
       <input
@@ -20,7 +30,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ text, completed, onToggle }) => {
           completed ? "line-through opacity-50" : ""
         }`}
       >
-        {text}
+        {task_title}
       </span>
     </div>
   );

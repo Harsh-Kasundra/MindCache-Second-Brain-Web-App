@@ -75,7 +75,7 @@ const Signup = () => {
         isAuthenticated: true,
       });
 
-      navigate("/dashboard");
+      navigate("/");
     } catch (err: any) {
       console.error("Signup error:", err);
       setSignupError(
@@ -103,65 +103,73 @@ const Signup = () => {
               Capture ideas. Organize thoughts. Build your second brain.
             </div>
           </div>
-          <div className="flex flex-col items-start gap-[13px] self-stretch px-[30px] py-[20px]">
-            <Input
-              label="Username"
-              required
-              placeholder="Enter Your Username"
-              supportingText="e.g. mindCache"
-              type="text"
-              key={"username"}
-              icon={<UserIcon height={25} width={25} />}
-              validate={() => userNameError}
-              reference={usernameRef}
-            />
-            <Input
-              label="Email"
-              required
-              placeholder="Enter Your Email"
-              supportingText="e.g. mindCache@gmail.com"
-              type="email"
-              key={"email"}
-              icon={<EmailIcon height={25} width={25} />}
-              validate={() => emailError}
-              reference={emailRef}
-            />
-            <Input
-              label="Password"
-              required
-              placeholder="Enter Your Password"
-              supportingText="e.g. mindCache"
-              type="password"
-              key={"password"}
-              icon={<PasswordIcon height={25} width={25} />}
-              validate={() => passwordError}
-              reference={passwordRef}
-            />
-          </div>
-          <div className="flex flex-col items-center gap-[20px] self-stretch px-[30px] py-[20px]">
-            {signupError && (
-              <div className="text-center text-sm font-medium text-red-500">
-                {signupError}
-              </div>
-            )}
-            <Button
-              text={"Sign Up"}
-              onClick={handleSignup}
-              color="primary"
-              disabled={isLoading}
-            />
-            <div className="text-text-light-950 dark:text-text-dark-100 flex items-center justify-center gap-1 p-[10px] text-sm font-medium">
-              Already have an account ?
-              <span
-                className="text-primary-600 hover:cursor-pointer"
-                onClick={() => {
-                  navigate("/signin");
-                }}
-              >
-                Sign In
-              </span>
+          <form
+            className="self-stretch"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignup();
+            }}
+          >
+            <div className="flex flex-col items-start gap-[13px] self-stretch px-[30px] py-[20px]">
+              <Input
+                label="Username"
+                required
+                placeholder="Enter Your Username"
+                supportingText="e.g. mindCache"
+                type="text"
+                key={"username"}
+                icon={<UserIcon height={25} width={25} />}
+                validate={() => userNameError}
+                reference={usernameRef}
+              />
+              <Input
+                label="Email"
+                required
+                placeholder="Enter Your Email"
+                supportingText="e.g. mindCache@gmail.com"
+                type="email"
+                key={"email"}
+                icon={<EmailIcon height={25} width={25} />}
+                validate={() => emailError}
+                reference={emailRef}
+              />
+              <Input
+                label="Password"
+                required
+                placeholder="Enter Your Password"
+                supportingText="e.g. mindCache"
+                type="password"
+                key={"password"}
+                icon={<PasswordIcon height={25} width={25} />}
+                validate={() => passwordError}
+                reference={passwordRef}
+              />
             </div>
-          </div>
+            <div className="flex flex-col items-center gap-[20px] self-stretch px-[30px] py-[20px]">
+              {signupError && (
+                <div className="text-center text-sm font-medium text-red-500">
+                  {signupError}
+                </div>
+              )}
+              <Button
+                text={"Sign Up"}
+                type={"submit"}
+                color="primary"
+                disabled={isLoading}
+              />
+              <div className="text-text-light-950 dark:text-text-dark-100 flex items-center justify-center gap-1 p-[10px] text-sm font-medium">
+                Already have an account ?
+                <span
+                  className="text-primary-600 hover:cursor-pointer"
+                  onClick={() => {
+                    navigate("/auth/signin");
+                  }}
+                >
+                  Sign In
+                </span>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </AuthBackground>

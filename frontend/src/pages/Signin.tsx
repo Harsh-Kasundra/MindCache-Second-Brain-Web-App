@@ -65,7 +65,7 @@ const Signin = () => {
         isAuthenticated: true,
       });
 
-      navigate("/dashboard");
+      navigate("/");
     } catch (err: any) {
       setSignupError(
         err?.response?.data?.message || "Signin failed. Please try again.",
@@ -92,54 +92,62 @@ const Signin = () => {
               Reconnect with your ideas. Continue building your second brain.
             </div>
           </div>
-          <div className="flex flex-col items-start gap-[13px] self-stretch px-[30px] py-[20px]">
-            <Input
-              label="Email"
-              required
-              placeholder="Enter Your Email"
-              supportingText="e.g. mindCache@gmail.com"
-              type="email"
-              key={"email"}
-              icon={<EmailIcon height={25} width={25} />}
-              validate={() => emailError}
-              reference={emailRef}
-            />
-            <Input
-              label="Password"
-              required
-              placeholder="Enter Your Password"
-              supportingText="e.g. mindCache"
-              type="password"
-              key={"password"}
-              icon={<PasswordIcon height={25} width={25} />}
-              validate={() => passwordError}
-              reference={passwordRef}
-            />
-          </div>
-          <div className="flex flex-col items-center gap-[20px] self-stretch px-[30px] py-[20px]">
-            {signupError && (
-              <div className="text-center text-sm font-medium text-red-500">
-                {signupError}
-              </div>
-            )}
-            <Button
-              text={"Sign In"}
-              onClick={handleSignin}
-              color="primary"
-              disabled={isLoading}
-            />
-            <div className="text-text-dark-950 dark:text-text-dark-100 flex items-center justify-center gap-1 p-[10px] text-sm font-medium">
-              Don&rsquo;t have an account ?
-              <span
-                className="text-primary-600 hover:cursor-pointer"
-                onClick={() => {
-                  navigate("/signup");
-                }}
-              >
-                Sign Up
-              </span>
+          <form
+            className="self-stretch"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignin();
+            }}
+          >
+            <div className="flex flex-col items-start gap-[13px] self-stretch px-[30px] py-[20px]">
+              <Input
+                label="Email"
+                required
+                placeholder="Enter Your Email"
+                supportingText="e.g. mindCache@gmail.com"
+                type="email"
+                key={"email"}
+                icon={<EmailIcon height={25} width={25} />}
+                validate={() => emailError}
+                reference={emailRef}
+              />
+              <Input
+                label="Password"
+                required
+                placeholder="Enter Your Password"
+                supportingText="e.g. mindCache"
+                type="password"
+                key={"password"}
+                icon={<PasswordIcon height={25} width={25} />}
+                validate={() => passwordError}
+                reference={passwordRef}
+              />
             </div>
-          </div>
+            <div className="flex flex-col items-center gap-[20px] self-stretch px-[30px] py-[20px]">
+              {signupError && (
+                <div className="text-center text-sm font-medium text-red-500">
+                  {signupError}
+                </div>
+              )}
+              <Button
+                text={"Sign In"}
+                type="submit"
+                color="primary"
+                disabled={isLoading}
+              />
+              <div className="text-text-dark-950 dark:text-text-dark-100 flex items-center justify-center gap-1 p-[10px] text-sm font-medium">
+                Don&rsquo;t have an account ?
+                <span
+                  className="text-primary-600 hover:cursor-pointer"
+                  onClick={() => {
+                    navigate("/auth/signup");
+                  }}
+                >
+                  Sign Up
+                </span>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </AuthBackground>

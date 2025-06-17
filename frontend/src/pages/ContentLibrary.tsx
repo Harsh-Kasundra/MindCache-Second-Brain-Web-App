@@ -1,75 +1,69 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import PlusIcon from "../assets/icons/PlusIcon";
 import ContentFilterTabs from "../components/ContentFilterTabs";
 import EmbeddedContent from "../components/EmbeddedContent";
 import Pagination from "../components/Pagination";
-
-// Define ContentProps type if not already available
-type ContentProps = {
-  content_description: string;
-  content_title: string;
-  content_link: string;
-  type: "Instagram" | "Twitter" | "Youtube" | "Medium" | "Text";
-};
+import { ContentProps } from "../utils/types";
+import { getAllContent } from "../api/content";
+import ShareIcon from "../assets/icons/ShareIcon";
 
 const ContentLibrary = () => {
   const [filter, setFilter] = useState<string>("All Content");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [content, setContent] =  useState<ContentProps[] | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 6;
 
-  // Replace this with data fetched from your backend later
-  const allContent: ContentProps[] = [
-    {
-      content_description: "This is a test content",
-      content_title: "This is test",
-      type: "Instagram",
-      content_link:
-        "https://www.instagram.com/p/DJrii3Po-Qz/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
-    },
-    {
-      content_description: "This is a test content",
-      content_title: "This is test",
-      type: "Twitter",
-      content_link: "https://x.com/heyhexadecimal/status/1925375309907730558",
-    },
-    {
-      content_description: "This is a test content",
-      content_title: "This is test",
-      type: "Youtube",
-      content_link: "https://youtu.be/RBH6_RgcToY?si=fSHriayH97ZHkzab",
-    },
-    {
-      content_description:
-        "A powerful quote that inspires creativity and innovation. The best way to get started is to quit talking and begin doing.” – Walt Disney",
-      content_title: "Inspiration Quote",
-      type: "Text",
-      content_link:
-        "The best way to get started is to quit talking and begin doing.” – Walt Disney",
-    },
-    {
-      content_description:
-        "Learn how to organize your digital life with Notion and build a productivity system inspired by Forte's 'Second Brain' method.",
-      content_title: "How to Build a Second Brain with Notion",
-      content_link:
-        "https://medium.com/@neilpatel/how-to-build-a-second-brain-with-notion-3e4f7f2e5a5d",
-      type: "Medium",
-    },
-  ];
+  const getContentData = async (page: number, filter: string) => {
+    setIsLoading(true);
+    try {
+      const contentType =
+        filter.toLowerCase() === "all content" ? undefined : filter;
+      const res = await getAllContent(page, limit, contentType);
+      if (res.success) {
+        const mappedData = res.content.map((item: any) => ({
+          content_id: item.content_id,
+          content_link: item.content_link,
+          content_type: item.Type?.type_name ?? "Unknown",
+          content_title: item.content_title,
+          content_createdAt: new Date(item.createdAt).toLocaleString(),
+          content_description: item.content_description,
+          content_tag: item.tags.map((tag: any) => tag.name).join(", "),
+        }));
+        setContent(mappedData);
+        setTotalPages(Math.ceil(res.totalCount / limit));
+      } else {
+        setContent([]);
+      }
+    } catch (error) {
+      console.log("Failed to fetch Content : ", error);
+      setContent([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getContentData(page, filter);
+  }, [page, filter]);
 
   const handleFilterChange = (selectedFilter: string) => {
-    console.log("Selected filter:", selectedFilter);
     setFilter(selectedFilter);
+    setPage(1);
   };
 
-  const handlePageChange = (page: number) => {
-    console.log("Current Page:", page);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
-  // Apply filtering
   const filteredContent =
     filter.toLowerCase() === "all content"
-      ? allContent
-      : allContent.filter(
-          (content) => content.type.toLowerCase() === filter.toLowerCase(),
+      ? content
+      : content?.filter(
+          (content) =>
+            content.content_type?.toLowerCase() === filter.toLowerCase(),
         );
 
   return (
@@ -81,11 +75,18 @@ const ContentLibrary = () => {
             All your saved content in one place
           </div>
         </div>
-        <Button
-          color="primary"
-          icon={<PlusIcon height={25} width={25} />}
-          text="Add Content"
-        />
+        <div className="flex items-center justify-center gap-4">
+          <Button
+            color="primary"
+            icon={<PlusIcon height={25} width={25} />}
+            text="Add Content"
+          />
+          <Button
+            color="secondary"
+            icon={<ShareIcon height={25} width={25} />}
+            text="Share Content"
+          />
+        </div>
       </div>
 
       <div className="mb-8 w-full overflow-x-auto">
@@ -94,13 +95,27 @@ const ContentLibrary = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredContent.map((content, index) => (
-          <EmbeddedContent key={index} {...content} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-10">
+          <div className="border-primary-600 h-10 w-10 animate-spin rounded-full border-4 border-t-transparent"></div>
+        </div>
+      ) : filteredContent?.length === 0 ? (
+        <div className="text-grey-500 py-10 text-center text-lg font-medium">
+          No Content Found in this Category.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredContent?.map((content, index) => (
+            <EmbeddedContent key={index} {...content} />
+          ))}
+        </div>
+      )}
 
-      {/* <Pagination totalPages={8} onPageChange={handlePageChange} /> */}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={page}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

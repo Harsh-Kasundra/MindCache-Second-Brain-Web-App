@@ -1,16 +1,18 @@
-import { useState } from "react";
-
 type PaginationProps = {
   totalPages: number;
+  currentPage: number;
   onPageChange: (page: number) => void;
 };
 
-const Pagination = ({ totalPages, onPageChange }: PaginationProps) => {
-  const [currentPage, setCurrentPage] = useState(1);
-
+const Pagination = ({
+  totalPages,
+  currentPage,
+  onPageChange,
+}: PaginationProps) => {
   const changePage = (page: number) => {
-    setCurrentPage(page);
-    onPageChange(page);
+    if (page !== currentPage) {
+      onPageChange(page);
+    }
   };
 
   const renderPageNumbers = () => {
@@ -45,34 +47,46 @@ const Pagination = ({ totalPages, onPageChange }: PaginationProps) => {
       }
     }
 
-    return pages.map((page, index) =>
-      page === "..." ? (
-        <span key={index} className="text-[#ffe6c7]">
-          ...
-        </span>
-      ) : (
+    return pages.map((page, index) => {
+      if (page === "...") {
+        return (
+          <span key={index} className="px-4 py-2 text-[#ffe6c7]">
+            ...
+          </span>
+        );
+      }
+
+      const pageNum = page as number;
+
+      return (
         <button
           key={index}
-          onClick={() => changePage(Number(page))}
+          onClick={() => changePage(pageNum)}
           className={`rounded-lg px-4 py-2 ${
-            currentPage === page
+            currentPage === pageNum
               ? "bg-[#ff6200] text-[#ffe6c7]"
               : "border border-[#a84c00]/30 bg-[#454545] text-[#ffe6c7]/60 hover:text-[#ffe6c7]"
           }`}
         >
-          {page}
+          {pageNum}
         </button>
-      ),
-    );
+      );
+    });
   };
 
   return (
     <div className="mt-8 flex justify-center">
       <nav className="flex items-center space-x-2">
         <button
-          onClick={() => currentPage > 1 && changePage(currentPage - 1)}
-          className="rounded-lg border border-[#a84c00]/30 bg-[#454545] p-2 text-[#ffe6c7]/60 hover:text-[#ffe6c7]"
+          onClick={() => changePage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`rounded-lg border border-[#a84c00]/30 bg-[#454545] p-2 ${
+            currentPage === 1
+              ? "text-[#555]"
+              : "text-[#ffe6c7]/60 hover:text-[#ffe6c7]"
+          }`}
         >
+          {/* Left arrow */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -92,11 +106,15 @@ const Pagination = ({ totalPages, onPageChange }: PaginationProps) => {
         {renderPageNumbers()}
 
         <button
-          onClick={() =>
-            currentPage < totalPages && changePage(currentPage + 1)
-          }
-          className="rounded-lg border border-[#a84c00]/30 bg-[#454545] p-2 text-[#ffe6c7]/60 hover:text-[#ffe6c7]"
+          onClick={() => changePage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`rounded-lg border border-[#a84c00]/30 bg-[#454545] p-2 ${
+            currentPage === totalPages
+              ? "text-[#555]"
+              : "text-[#ffe6c7]/60 hover:text-[#ffe6c7]"
+          }`}
         >
+          {/* Right arrow */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"

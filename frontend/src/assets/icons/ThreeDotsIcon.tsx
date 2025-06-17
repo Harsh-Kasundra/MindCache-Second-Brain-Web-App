@@ -1,24 +1,24 @@
+import React from "react";
 import { svgprops } from "./types";
 
-const PlusIcon = ({ height, width }: svgprops) => {
+const ThreeDotsIcon = ({ height, width }: svgprops) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
+      className="rotate-90"
       fill="none"
       viewBox="0 0 24 24"
-      strokeWidth="2.5"
       stroke="currentColor"
       height={height}
       width={width}
-      className="text-text-dark-100"
     >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M12 4.5v15m7.5-7.5h-15"
+        strokeWidth="4"
+        d="M5 12h.01M12 12h.01M19 12h.01"
       />
     </svg>
   );
 };
 
-export default PlusIcon;
+export default ThreeDotsIcon;

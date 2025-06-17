@@ -4,6 +4,9 @@ import InstagramIcon from "../assets/icons/InstagramIcon";
 import TwitterIcon from "../assets/icons/TwitterIcon";
 import NotesIcon from "../assets/icons/NotesIcon";
 import ImageIcon from "../assets/icons/ImageIcon";
+import MediumIcon from "../assets/icons/MediumIcon";
+import ThreeDotsIcon from "../assets/icons/ThreeDotsIcon";
+import { ContentProps } from "../utils/types";
 
 // Load Twitter embed script once
 const loadTwitterScript = () => {
@@ -15,41 +18,38 @@ const loadTwitterScript = () => {
   }
 };
 
-export type ContentProps = {
-  content_title: string;
-  content_description: string;
-  content_link?: string;
-  type: "Instagram" | "Twitter" | "Youtube" | "Text" | "Image" | "Medium";
-};
-
 const EmbeddedContent: React.FC<ContentProps> = ({
   content_title,
   content_description,
   content_link,
-  type,
+  content_type,
+  content_tag,
+  content_createdAt,
 }) => {
   React.useEffect(() => {
-    if (type === "Twitter") loadTwitterScript();
-  }, [type]);
+    if (content_type === "Twitter") loadTwitterScript();
+  }, [content_type]);
 
   return (
-    <div className="bg-secondary-800 border-primary-800/30 hover:border-primary-800/50 group overflow-hidden rounded-xl border transition-all duration-200">
+    <div className="dark:bg-secondary-950 bg-secondary-200 border-primary-800/30 hover:border-primary-800/50 group overflow-hidden rounded-xl border transition-all duration-200">
       {/* Header */}
       <div className="border-primary-800/30 border-b p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center">
             <div className="bg-primary-600/10 mr-3 rounded-lg p-2">
-              {getIcon(type)}
+              {getIcon(content_type)}
             </div>
             <div>
-              <h3 className="text-text-dark-100 font-medium">
+              <h3 className="dark:text-text-dark-100 text-text-light-950 font-medium">
                 {content_title}
               </h3>
-              <p className="text-text-dark-100/60 text-xs">Saved just now</p>
+              <p className="dark:text-text-dark-100 text-text-light-950 text-xs">
+                Saved just now
+              </p>
             </div>
           </div>
-          <button className="text-text-dark-100/60 hover:text-primary-600 transition-colors duration-200">
-            <ThreeDotsIcon />
+          <button className="text-primary-600 hover:text-primary-800 transition-colors duration-200 hover:cursor-pointer">
+            <ThreeDotsIcon height={20} width={20} />
           </button>
         </div>
       </div>
@@ -58,7 +58,7 @@ const EmbeddedContent: React.FC<ContentProps> = ({
       <div className="group relative w-full max-w-full overflow-hidden rounded-xl bg-black shadow-md">
         {/* Media Container */}
         <div className="aspect-video h-full w-full">
-          {type === "Youtube" && content_link && (
+          {content_type === "Youtube" && content_link && (
             <iframe
               className="h-full w-full"
               src={`https://www.youtube.com/embed/${extractYouTubeId(content_link)}`}
@@ -66,33 +66,33 @@ const EmbeddedContent: React.FC<ContentProps> = ({
               allowFullScreen
             />
           )}
-          {type === "Instagram" && content_link && (
+          {content_type === "Instagram" && content_link && (
             <iframe
               src={`https://www.instagram.com/p/${extractInstagramId(content_link)}/embed`}
               className="h-full w-full"
               allowFullScreen
             />
           )}
-          {type === "Twitter" && content_link && (
+          {content_type === "Twitter" && content_link && (
             <div className="h-full w-full overflow-y-auto">
               <blockquote className="twitter-tweet">
                 <a href={convertToTwitterLink(content_link)}></a>
               </blockquote>
             </div>
           )}
-          {type === "Image" && content_link && (
+          {content_type === "Image" && content_link && (
             <img
               src={content_link}
               alt={content_title}
               className="h-full w-full object-cover"
             />
           )}
-          {type === "Text" && (
+          {content_type === "Text" && (
             <div className="flex h-full w-full items-center justify-center bg-gray-800 p-6 text-center text-white">
               <p className="text-base">{content_link}</p>
             </div>
           )}
-          {type === "Medium" && content_link && (
+          {content_type === "Medium" && content_link && (
             <a
               href={content_link}
               target="_blank"
@@ -113,19 +113,48 @@ const EmbeddedContent: React.FC<ContentProps> = ({
         </div>
 
         {/* Description Section */}
-        <div className="bg-white p-4">
-          <p className="text-md mb-4 text-gray-600">{content_description}</p>
-
+        <div className="dark:bg-secondary-950 bg-secondary-200 p-4">
+          <p className="text-md dark:text-text-dark-100/80 text-light-950/80 mb-4">
+            {content_description}
+          </p>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button className="flex items-center text-gray-500 transition-colors duration-200 hover:text-red-500">
-                <HeartIcon />
-                <span className="ml-1 text-sm">12</span>
-              </button>
-              <button className="flex items-center text-gray-500 transition-colors duration-200 hover:text-orange-500">
-                <ShareIcon />
-                <span className="ml-1 text-sm">Share</span>
-              </button>
+            <div className="mt-3 flex items-center">
+              <span className="dark:text-text-dark-100/60 text-text-light-950/60 mr-4 flex items-center text-xs">
+                <svg
+                  className="mr-1 h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                  />
+                </svg>
+                {content_tag}
+              </span>
+            </div>
+            <div className="mt-3 flex items-center">
+              <span className="dark:text-text-dark-100/60 text-text-light-950/60 flex items-center text-xs">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="mr-1 h-4 w-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                  />
+                </svg>
+
+                {content_createdAt}
+              </span>
             </div>
           </div>
         </div>
@@ -155,83 +184,7 @@ function convertToTwitterLink(link: string): string {
   return link.replace("https://x.com", "https://twitter.com");
 }
 
-const PlayIcon = () => (
-  <svg
-    className="h-8 w-8"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-    />
-  </svg>
-);
-
-const ThreeDotsIcon = () => (
-  <svg
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M5 12h.01M12 12h.01M19 12h.01"
-    />
-  </svg>
-);
-
-const HeartIcon = () => (
-  <svg
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-    />
-  </svg>
-);
-const MediumIcon = () => (
-  <svg
-    className="h-6 w-6"
-    viewBox="0 0 1043.63 592.71"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g>
-      <path d="M588.67 296.34c0 163.63-132.62 296.34-296.33 296.34S0 459.97 0 296.34 132.62 0 296.34 0s296.33 132.62 296.33 296.34zm418.38 0c0 148.03-66.09 268.03-147.6 268.03s-147.6-120-147.6-268.03S878.94 28.31 960.45 28.31s147.6 120 147.6 268.03zM1043.63 296.34c0 137.89-29.53 249.67-65.97 249.67-36.44 0-65.97-111.78-65.97-249.67S941.22 46.67 977.66 46.67c36.44 0 65.97 111.78 65.97 249.67z" />
-    </g>
-  </svg>
-);
-
-const ShareIcon = () => (
-  <svg
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M8.684 13.342a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684z"
-    />
-  </svg>
-);
-
-const getIcon = (type: ContentProps["type"]) => {
+const getIcon = (type: ContentProps["content_type"]) => {
   switch (type) {
     case "Youtube":
       return <YTIcon height={25} width={25} />;
@@ -244,8 +197,8 @@ const getIcon = (type: ContentProps["type"]) => {
     case "Text":
       return <NotesIcon height={25} width={25} />;
     case "Medium":
-      return <MediumIcon />;
+      return <MediumIcon height={25} width={25} />;
     default:
-      return <PlayIcon />;
+      null;
   }
 };
